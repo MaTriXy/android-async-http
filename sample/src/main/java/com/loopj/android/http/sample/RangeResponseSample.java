@@ -1,13 +1,13 @@
 /*
     Android Asynchronous Http Client Sample
     Copyright (c) 2014 Marek Sebera <marek.sebera@gmail.com>
-    http://loopj.com
+    https://loopj.com
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-        http://www.apache.org/licenses/LICENSE-2.0
+        https://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,22 +21,25 @@ package com.loopj.android.http.sample;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
+
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RangeFileAsyncHttpResponseHandler;
 import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.ResponseHandlerInterface;
+
 import java.io.File;
 import java.io.IOException;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.HttpUriRequest;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
+import cz.msebera.android.httpclient.client.methods.HttpUriRequest;
 
 /**
  * This sample demonstrates use of {@link RangeFileAsyncHttpResponseHandler} to
  * download a remote file in multiple requests. While this response handler
  * class handles file storage, it's up to the app itself to request all chunks
  * of the file.
- *
+ * <p/>
  * Also demonstrated a method to query the remote file's size prior to sending
  * the actual GET requests. This ensures that the remote server is actually
  * capable of supporting the "Range" header, necessary to make this sample work.
@@ -71,7 +74,9 @@ public class RangeResponseSample extends GetSample {
 
         // Remove temporary file.
         if (file != null) {
-            file.delete();
+            if (!file.delete()) {
+                Log.e(LOG_TAG, String.format("Couldn't remove temporary file in path: %s", file.getAbsolutePath()));
+            }
             file = null;
         }
     }
@@ -83,7 +88,7 @@ public class RangeResponseSample extends GetSample {
 
     @Override
     public String getDefaultURL() {
-        return "http://upload.wikimedia.org/wikipedia/commons/f/fa/Geysers_on_Mars.jpg";
+        return "https://upload.wikimedia.org/wikipedia/commons/f/fa/Geysers_on_Mars.jpg";
     }
 
     @Override
@@ -133,9 +138,9 @@ public class RangeResponseSample extends GetSample {
                     // Is the content length known?
                     if (!supportsRange || fileSize < 1) {
                         Toast.makeText(
-                            RangeResponseSample.this,
-                            "Unable to determine remote file's size, or\nremote server doesn't support ranges",
-                            Toast.LENGTH_LONG
+                                RangeResponseSample.this,
+                                "Unable to determine remote file's size, or\nremote server doesn't support ranges",
+                                Toast.LENGTH_LONG
                         ).show();
                     }
                 }

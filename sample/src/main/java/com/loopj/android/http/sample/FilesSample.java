@@ -7,17 +7,17 @@ import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.ResponseHandlerInterface;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.Random;
 
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
+
 public class FilesSample extends PostSample {
 
-    public static final String LOG_TAG = "PostFilesSample";
+    public static final String LOG_TAG = "FilesSample";
 
     @Override
     public int getSampleTitle() {
@@ -34,11 +34,13 @@ public class FilesSample extends PostSample {
         try {
             RequestParams params = new RequestParams();
             final String contentType = RequestParams.APPLICATION_OCTET_STREAM;
-            params.put("fileOne", createTempFile("fileOne", 1020), contentType);
+            params.put("fileOne", createTempFile("fileOne", 1020), contentType, "fileOne");
             params.put("fileTwo", createTempFile("fileTwo", 1030), contentType);
-            params.put("fileThree", createTempFile("fileThree", 1040), contentType);
+            params.put("fileThree", createTempFile("fileThree", 1040), contentType, "customFileThree");
             params.put("fileFour", createTempFile("fileFour", 1050), contentType);
-            params.put("fileFive", createTempFile("fileFive", 1060), contentType);
+            params.put("fileFive", createTempFile("fileFive", 1060), contentType, "testingFileFive");
+            params.setHttpEntityIsRepeatable(true);
+            params.setUseJsonStreamer(false);
             return client.post(this, URL, params, responseHandler);
         } catch (FileNotFoundException fnfException) {
             Log.e(LOG_TAG, "executeSample failed with FileNotFoundException", fnfException);

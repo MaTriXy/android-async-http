@@ -1,5 +1,74 @@
 # CHANGELOG
 
+## 1.5.0 (future release)
+
+## 1.4.9 (released 19. 9. 2015)
+
+Complete list of commits included is here [https://github.com/loopj/android-async-http/commits/1.4.9](https://github.com/loopj/android-async-http/commits/1.4.9)  
+List of closed issues is here [https://github.com/loopj/android-async-http/issues?milestone=8&state=closed](https://github.com/loopj/android-async-http/issues?milestone=8&state=closed)
+
+  - **IMPORTANT**, We've switched library from using `org.apache.http` to use `cz.msebera.android.httpclient`, you have to update all your code
+  - Library is from now on using upstream version of HttpClient libraries, provided by repackaging project https://github.com/smarek/httpclient-android/
+  - Achieved API23 Compatibility, see #830 for more info
+  - Added HeadSample into sample application, to verify Head request works as it should
+  - FileAsyncHttpResponseHandler now has constructor with `usePoolThread` param, which causes callbacks to be fired from ThreadPool instead of main looper
+
+## 1.4.8 (released 17. 7. 2015)
+
+Complete list of commits included is here [https://github.com/loopj/android-async-http/commits/1.4.8](https://github.com/loopj/android-async-http/commits/1.4.8)  
+List of closed issues is here [https://github.com/loopj/android-async-http/issues?milestone=7&state=closed](https://github.com/loopj/android-async-http/issues?milestone=7&state=closed)
+
+  - New constructor for BinaryHttpResponseHandler which takes Looper as argument (thanks to @ScottFrank)
+  - SaxAsyncHttpResponseHandler can be now provided with custom charset, instead of just using default one
+  - Library LogCat tags now use shorter form (forced through Lint checks), appendix "ResponseHandler" shortened to "RH"
+  - Updated documentation on `RequestHandle.cancel(boolean)` and returning correct response according to handle state
+  - SaxAsyncHttpResponseHandler onFailure(int, Header[], byte[], Throwable) used wrong fallback to onSuccess(int, Header[], T), fixed to onFailure(int, Header[], T), where T extends SAX DefaultHandler
+  - Regression fix on onProgress(int,int) documentation
+  - Sample application now can be built with LeakCanary, use i.e. `gradle :sample:installWithLeakCanaryDebug` to use it
+  - Updated RequestParams documentation on handling arrays, sets and maps, along with new RequestParamsDebug sample
+  - Added BlackholeHttpResponseHandler implementation, which discards all response contents and silents all various log messages (see #416)
+  - Added LogInterface, it's default implementation and interface option to disable/enable logging library-wide and set logging verbosity
+  - Added option to TAG RequestHandle and cancel all requests matching specified TAG through `AsyncHttpClient.cancelRequestsByTAG(Object TAG)`
+  - Removed deprecated `getTimeout()` replaced by `getConnectTimeout()` and `getResponseTimeout()` respectively
+  - Removed deprecated `clearBasicAuth()` replaced by `clearCredentialsProvider()`
+
+## 1.4.7 (released 9. 5. 2015)
+
+Complete list of commits included is here [https://github.com/loopj/android-async-http/commits/1.4.7](https://github.com/loopj/android-async-http/commits/1.4.7)  
+List of closed issues is here [https://github.com/loopj/android-async-http/issues?milestone=6&state=closed](https://github.com/loopj/android-async-http/issues?milestone=6&state=closed)
+
+  - Fixed crash when canceling through RequestHandle from UI Thread (NetworkOnMainThreadException)
+  - Fixed URL encoding feature, that was breaking whole URL, not just path and query parts
+  - FileAsyncHttpResponseHandler now checks that target file path is available or can be created
+  - DataAsyncHttpResponseHandler was sending cancel notification instead of progress notification, fixed
+  - Added support for HTTP PATCH requests
+  - Fixed Assert exception when mkdirs in FileAsyncHttpResponseHandler tries to create dirs that already exists
+  - Provided option to easily override ClientConnectionManager provision in AsyncHttpClient
+  - Changed onProgress from (int,int) to (long,long) for dealing with large transfers
+  - Renamed typo of `preemtive` to `preemptive` (preemptive basic auth)
+  - Added option to put File array in RequestParams
+  - RequestParams now support forcing Content-Type into `multipart/form-data` even if there are no files/streams to be multiparted
+  - Gradle added support for installing to local maven repository, through `gradle installArchives` task
+  - Added support for Json RFC5179 in JsonHttpResponseHandler
+
+## 1.4.6 (released 7. 9. 2014)
+
+Complete list of commits included is here [https://github.com/loopj/android-async-http/commits/1.4.6](https://github.com/loopj/android-async-http/commits/1.4.6)  
+List of closed issues is here [https://github.com/loopj/android-async-http/issues?milestone=4&state=closed](https://github.com/loopj/android-async-http/issues?milestone=2&state=closed)
+
+  - Fixed missing boundary when passing content-type as call param along with HttpEntity
+  - Added warnings for not overriden calls in JsonHttpResponseHandler (and others)
+  - RequestParams now implement Serializable, to support storing them and passing them along
+  - Added option to add File part with custom file name (overriding the real file name)
+  - Fixed not-escaped contents in JsonStreamEntity
+  - Separated connect and response timeout settings
+  - Allowed to pass Looper into *HttpResponseHandler classes
+  - Fixed reporting progress on GZIP compressed down-streams
+  - Added more samples (eg. AsyncBackgroundThreadSample.java, ContentTypeForHttpEntitySample.java, PrePostProcessingSample.java)
+  - Added option to pre- and post- process data in AsyncHttpRequest.java via subclass (see PrePostProcessingSample.java)
+  - Fixed ConcurrentModificationException on AsyncHttpClient.cancelRequests
+  - Fixed handling BOM in decoding response in TextHttpResponseHandler and JsonHttpResponseHandler
+
 ## 1.4.5 (released 22. 6. 2014)
 
 Complete list of commits included is here [https://github.com/loopj/android-async-http/commits/1.4.5](https://github.com/loopj/android-async-http/commits/1.4.5)  
@@ -74,7 +143,7 @@ List of closed issues is here [https://github.com/loopj/android-async-http/issue
     - Is returned for each call (`.post(...)`, `.get(...)`, `.head(...)`, `.put(...)`, etc..)
   - Added BaseJsonHttpResponseHandler to simplify integration with Jackson JSON, Gson and other JSON parsing libraries
   - Added Sample application to demonstrate functions and usage
-    - Using [http://httpbin.org/](http://httpbin.org/) to test methods
+    - Using [https://httpbin.org/](https://httpbin.org/) to test methods
   - Enforcing INTERNET permission
   - Support for Gradle buildscript
   - Support for Travis CI (Continuous Integration) testing

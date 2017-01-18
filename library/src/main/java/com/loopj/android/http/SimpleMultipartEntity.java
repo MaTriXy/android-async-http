@@ -1,13 +1,13 @@
 /*
     Android Asynchronous Http Client
     Copyright (c) 2011 James Smith <james@loopj.com>
-    http://loopj.com
+    https://loopj.com
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-        http://www.apache.org/licenses/LICENSE-2.0
+        https://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,18 +17,13 @@
 */
 
 /*
-    This code is taken from Rafael Sanches' blog.
-    http://blog.rafaelsanches.com/2011/01/29/upload-using-multipart-post-using-httpclient-in-android/
+    This code is taken from Rafael Sanches' blog. Link is no longer working (as of 17th July 2015)
+    https://blog.rafaelsanches.com/2011/01/29/upload-using-multipart-post-using-httpclient-in-android/
 */
 
 package com.loopj.android.http;
 
-import android.util.Log;
-
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.HTTP;
+import android.text.TextUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -39,6 +34,11 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
+import cz.msebera.android.httpclient.message.BasicHeader;
+import cz.msebera.android.httpclient.protocol.HTTP;
 
 /**
  * Simplified multipart entity mainly used for sending one or more files.
@@ -58,19 +58,15 @@ class SimpleMultipartEntity implements HttpEntity {
     private final String boundary;
     private final byte[] boundaryLine;
     private final byte[] boundaryEnd;
-    private boolean isRepeatable;
-
     private final List<FilePart> fileParts = new ArrayList<FilePart>();
-
     // The buffer we use for building the message excluding files and the last
     // boundary
     private final ByteArrayOutputStream out = new ByteArrayOutputStream();
-
     private final ResponseHandlerInterface progressHandler;
+    private boolean isRepeatable;
+    private long bytesWritten;
 
-    private int bytesWritten;
-
-    private int totalSize;
+    private long totalSize;
 
     public SimpleMultipartEntity(ResponseHandlerInterface progressHandler) {
         final StringBuilder buf = new StringBuilder();
@@ -96,7 +92,7 @@ class SimpleMultipartEntity implements HttpEntity {
             out.write(CR_LF);
         } catch (final IOException e) {
             // Shall not happen on ByteArrayOutputStream
-            Log.e(LOG_TAG, "addPart ByteArrayOutputStream exception", e);
+            AsyncHttpClient.log.e(LOG_TAG, "addPart ByteArrayOutputStream exception", e);
         }
     }
 
@@ -115,6 +111,10 @@ class SimpleMultipartEntity implements HttpEntity {
 
     public void addPart(String key, File file, String type) {
         fileParts.add(new FilePart(key, file, normalizeContentType(type)));
+    }
+
+    public void addPart(String key, File file, String type, String customFileName) {
+        fileParts.add(new FilePart(key, file, normalizeContentType(type), customFileName));
     }
 
     public void addPart(String key, String streamName, InputStream inputStream, String type)
@@ -137,8 +137,6 @@ class SimpleMultipartEntity implements HttpEntity {
 
         out.write(CR_LF);
         out.flush();
-
-        AsyncHttpClient.silentCloseOutputStream(out);
     }
 
     private String normalizeContentType(String type) {
@@ -152,72 +150,21 @@ class SimpleMultipartEntity implements HttpEntity {
 
     private byte[] createContentDisposition(String key) {
         return (
-            AsyncHttpClient.HEADER_CONTENT_DISPOSITION +
-            ": form-data; name=\"" + key + "\"" + STR_CR_LF).getBytes();
+                AsyncHttpClient.HEADER_CONTENT_DISPOSITION +
+                        ": form-data; name=\"" + key + "\"" + STR_CR_LF).getBytes();
     }
 
     private byte[] createContentDisposition(String key, String fileName) {
         return (
-            AsyncHttpClient.HEADER_CONTENT_DISPOSITION +
-            ": form-data; name=\"" + key + "\"" +
-            "; filename=\"" + fileName + "\"" + STR_CR_LF).getBytes();
+                AsyncHttpClient.HEADER_CONTENT_DISPOSITION +
+                        ": form-data; name=\"" + key + "\"" +
+                        "; filename=\"" + fileName + "\"" + STR_CR_LF).getBytes();
     }
 
-    private void updateProgress(int count) {
+    private void updateProgress(long count) {
         bytesWritten += count;
         progressHandler.sendProgressMessage(bytesWritten, totalSize);
     }
-
-    private class FilePart {
-        public File file;
-        public byte[] header;
-
-        public FilePart(String key, File file, String type) {
-            header = createHeader(key, file.getName(), type);
-            this.file = file;
-        }
-
-        private byte[] createHeader(String key, String filename, String type) {
-            ByteArrayOutputStream headerStream = new ByteArrayOutputStream();
-            try {
-                headerStream.write(boundaryLine);
-
-                // Headers
-                headerStream.write(createContentDisposition(key, filename));
-                headerStream.write(createContentType(type));
-                headerStream.write(TRANSFER_ENCODING_BINARY);
-                headerStream.write(CR_LF);
-            } catch (IOException e) {
-                // Can't happen on ByteArrayOutputStream
-                Log.e(LOG_TAG, "createHeader ByteArrayOutputStream exception", e);
-            }
-            return headerStream.toByteArray();
-        }
-
-        public long getTotalLength() {
-            long streamLength = file.length() + CR_LF.length;
-            return header.length + streamLength;
-        }
-
-        public void writeTo(OutputStream out) throws IOException {
-            out.write(header);
-            updateProgress(header.length);
-
-            FileInputStream inputStream = new FileInputStream(file);
-            final byte[] tmp = new byte[4096];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(tmp)) != -1) {
-                out.write(tmp, 0, bytesRead);
-                updateProgress(bytesRead);
-            }
-            out.write(CR_LF);
-            updateProgress(CR_LF.length);
-            out.flush();
-            AsyncHttpClient.silentCloseInputStream(inputStream);
-        }
-    }
-
-    // The following methods are from the HttpEntity interface
 
     @Override
     public long getContentLength() {
@@ -233,11 +180,13 @@ class SimpleMultipartEntity implements HttpEntity {
         return contentLen;
     }
 
+    // The following methods are from the HttpEntity interface
+
     @Override
     public Header getContentType() {
         return new BasicHeader(
-            AsyncHttpClient.HEADER_CONTENT_TYPE,
-            "multipart/form-data; boundary=" + boundary);
+                AsyncHttpClient.HEADER_CONTENT_TYPE,
+                "multipart/form-data; boundary=" + boundary);
     }
 
     @Override
@@ -290,5 +239,59 @@ class SimpleMultipartEntity implements HttpEntity {
     public InputStream getContent() throws IOException, UnsupportedOperationException {
         throw new UnsupportedOperationException(
                 "getContent() is not supported. Use writeTo() instead.");
+    }
+
+    private class FilePart {
+        public final File file;
+        public final byte[] header;
+
+        public FilePart(String key, File file, String type, String customFileName) {
+            header = createHeader(key, TextUtils.isEmpty(customFileName) ? file.getName() : customFileName, type);
+            this.file = file;
+        }
+
+        public FilePart(String key, File file, String type) {
+            header = createHeader(key, file.getName(), type);
+            this.file = file;
+        }
+
+        private byte[] createHeader(String key, String filename, String type) {
+            ByteArrayOutputStream headerStream = new ByteArrayOutputStream();
+            try {
+                headerStream.write(boundaryLine);
+
+                // Headers
+                headerStream.write(createContentDisposition(key, filename));
+                headerStream.write(createContentType(type));
+                headerStream.write(TRANSFER_ENCODING_BINARY);
+                headerStream.write(CR_LF);
+            } catch (IOException e) {
+                // Can't happen on ByteArrayOutputStream
+                AsyncHttpClient.log.e(LOG_TAG, "createHeader ByteArrayOutputStream exception", e);
+            }
+            return headerStream.toByteArray();
+        }
+
+        public long getTotalLength() {
+            long streamLength = file.length() + CR_LF.length;
+            return header.length + streamLength;
+        }
+
+        public void writeTo(OutputStream out) throws IOException {
+            out.write(header);
+            updateProgress(header.length);
+
+            FileInputStream inputStream = new FileInputStream(file);
+            final byte[] tmp = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(tmp)) != -1) {
+                out.write(tmp, 0, bytesRead);
+                updateProgress(bytesRead);
+            }
+            out.write(CR_LF);
+            updateProgress(CR_LF.length);
+            out.flush();
+            AsyncHttpClient.silentCloseInputStream(inputStream);
+        }
     }
 }
