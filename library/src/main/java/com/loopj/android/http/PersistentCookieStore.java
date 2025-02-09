@@ -1,7 +1,7 @@
 /*
     Android Asynchronous Http Client
     Copyright (c) 2011 James Smith <james@loopj.com>
-    https://loopj.com
+    https://github.com/android-async-http/android-async-http
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -97,7 +97,7 @@ public class PersistentCookieStore implements CookieStore {
         SharedPreferences.Editor prefsWriter = cookiePrefs.edit();
         prefsWriter.putString(COOKIE_NAME_STORE, TextUtils.join(",", cookies.keySet()));
         prefsWriter.putString(COOKIE_NAME_PREFIX + name, encodeCookie(new SerializableCookie(cookie)));
-        prefsWriter.commit();
+        prefsWriter.apply();
     }
 
     @Override
@@ -108,7 +108,7 @@ public class PersistentCookieStore implements CookieStore {
             prefsWriter.remove(COOKIE_NAME_PREFIX + name);
         }
         prefsWriter.remove(COOKIE_NAME_STORE);
-        prefsWriter.commit();
+        prefsWriter.apply();
 
         // Clear cookies from local store
         cookies.clear();
@@ -138,7 +138,7 @@ public class PersistentCookieStore implements CookieStore {
         if (clearedAny) {
             prefsWriter.putString(COOKIE_NAME_STORE, TextUtils.join(",", cookies.keySet()));
         }
-        prefsWriter.commit();
+        prefsWriter.apply();
 
         return clearedAny;
     }
@@ -168,7 +168,7 @@ public class PersistentCookieStore implements CookieStore {
         cookies.remove(name);
         SharedPreferences.Editor prefsWriter = cookiePrefs.edit();
         prefsWriter.remove(COOKIE_NAME_PREFIX + name);
-        prefsWriter.commit();
+        prefsWriter.apply();
     }
 
     /**

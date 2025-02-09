@@ -1,7 +1,7 @@
 /*
     Android Asynchronous Http Client Sample
     Copyright (c) 2014 Marek Sebera <marek.sebera@gmail.com>
-    https://loopj.com
+    https://github.com/android-async-http/android-async-http
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@
 
 package com.loopj.android.http.sample.util;
 
-import android.os.Build;
 import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -189,11 +188,9 @@ public class SecureSocketFactory extends SSLSocketFactory {
      */
     private void injectHostname(Socket socket, String host) {
         try {
-            if (Integer.valueOf(Build.VERSION.SDK) >= 4) {
-                Field field = InetAddress.class.getDeclaredField("hostName");
-                field.setAccessible(true);
-                field.set(socket.getInetAddress(), host);
-            }
+            Field field = InetAddress.class.getDeclaredField("hostName");
+            field.setAccessible(true);
+            field.set(socket.getInetAddress(), host);
         } catch (Exception ignored) {
         }
     }

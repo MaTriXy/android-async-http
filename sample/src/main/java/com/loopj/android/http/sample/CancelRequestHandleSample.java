@@ -1,7 +1,7 @@
 /*
     Android Asynchronous Http Client Sample
     Copyright (c) 2014 Marek Sebera <marek.sebera@gmail.com>
-    https://loopj.com
+    https://github.com/android-async-http/android-async-http
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ package com.loopj.android.http.sample;
 
 import android.util.Log;
 
+import java.util.Locale;
+
 import com.loopj.android.http.RequestHandle;
 
 public class CancelRequestHandleSample extends ThreadingTimeoutSample {
@@ -33,14 +35,14 @@ public class CancelRequestHandleSample extends ThreadingTimeoutSample {
 
     @Override
     public void onCancelButtonPressed() {
-        Log.d(LOG_TAG, String.format("Number of handles found: %d", getRequestHandles().size()));
+        Log.d(LOG_TAG, String.format(Locale.US, "Number of handles found: %d", getRequestHandles().size()));
         int counter = 0;
         for (RequestHandle handle : getRequestHandles()) {
             if (!handle.isCancelled() && !handle.isFinished()) {
-                Log.d(LOG_TAG, String.format("Cancelling handle %d", counter));
-                Log.d(LOG_TAG, String.format("Handle %d cancel", counter) + (handle.cancel(true) ? " succeeded" : " failed"));
+                Log.d(LOG_TAG, String.format(Locale.US, "Cancelling handle %d", counter));
+                Log.d(LOG_TAG, String.format(Locale.US, "Handle %d cancel", counter) + (handle.cancel(true) ? " succeeded" : " failed"));
             } else {
-                Log.d(LOG_TAG, String.format("Handle %d already non-cancellable", counter));
+                Log.d(LOG_TAG, String.format(Locale.US, "Handle %d already non-cancellable", counter));
             }
             counter++;
         }

@@ -1,7 +1,7 @@
 /*
     Android Asynchronous Http Client Sample
     Copyright (c) 2014 Marek Sebera <marek.sebera@gmail.com>
-    https://loopj.com
+    https://github.com/android-async-http/android-async-http
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -24,6 +24,8 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.ResponseHandlerInterface;
+
+import java.util.Locale;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpEntity;
@@ -85,7 +87,7 @@ public class GetSample extends SampleParentActivity {
             @Override
             public void onRetry(int retryNo) {
                 Toast.makeText(GetSample.this,
-                        String.format("Request is retried, retry no. %d", retryNo),
+                        String.format(Locale.US, "Request is retried, retry no. %d", retryNo),
                         Toast.LENGTH_SHORT)
                         .show();
             }

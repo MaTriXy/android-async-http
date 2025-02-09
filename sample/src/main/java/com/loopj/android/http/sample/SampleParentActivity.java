@@ -1,7 +1,7 @@
 /*
     Android Asynchronous Http Client Sample
     Copyright (c) 2014 Marek Sebera <marek.sebera@gmail.com>
-    https://loopj.com
+    https://github.com/android-async-http/android-async-http
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -263,7 +263,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
 
                     String headerName = line.substring(0, equalSignPos).trim();
                     String headerValue = line.substring(1 + equalSignPos).trim();
-                    Log.d(LOG_TAG, String.format("Added header: [%s:%s]", headerName, headerValue));
+                    Log.d(LOG_TAG, String.format(Locale.US, "Added header: [%s:%s]", headerName, headerValue));
 
                     headers.add(new BasicHeader(headerName, headerValue));
                 } catch (Throwable t) {
@@ -394,7 +394,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void setHomeAsUpEnabled() {
-        if (Integer.valueOf(Build.VERSION.SDK) >= 11) {
+        if (Build.VERSION.SDK_INT >= 11) {
             if (getActionBar() != null)
                 getActionBar().setDisplayHomeAsUpEnabled(true);
         }

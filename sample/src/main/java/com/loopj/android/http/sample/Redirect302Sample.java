@@ -1,7 +1,7 @@
 /*
     Android Asynchronous Http Client Sample
     Copyright (c) 2014 Marek Sebera <marek.sebera@gmail.com>
-    https://loopj.com
+    https://github.com/android-async-http/android-async-http
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@ import com.loopj.android.http.AsyncHttpClient;
 
 import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
+
+import java.util.Locale;
 
 public class Redirect302Sample extends GetSample {
 
@@ -89,7 +91,7 @@ public class Redirect302Sample extends GetSample {
         HttpClient client = ahc.getHttpClient();
         if (client instanceof DefaultHttpClient) {
             Toast.makeText(this,
-                    String.format("redirects: %b\nrelative redirects: %b\ncircular redirects: %b",
+                    String.format(Locale.US, "redirects: %b\nrelative redirects: %b\ncircular redirects: %b",
                             enableRedirects, enableRelativeRedirects, enableCircularRedirects),
                     Toast.LENGTH_SHORT
             ).show();

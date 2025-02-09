@@ -1,22 +1,22 @@
 Asynchronous Http Client for Android
 ====================================
-[![Build Status](https://travis-ci.org/loopj/android-async-http.png?branch=master)](https://travis-ci.org/loopj/android-async-http)
+[![Build Status](https://travis-ci.org/android-async-http/android-async-http.png?branch=master)](https://travis-ci.org/android-async-http/android-async-http)
 
 An asynchronous, callback-based Http client for Android built on top of Apache's [HttpClient](https://hc.apache.org/httpcomponents-client-ga/) libraries.
 
 Changelog
 ---------
 
-See what is new in version 1.4.9 released on 19th September 2015
+See what is new in version 1.4.11 released on 29th June 2020
 
-https://github.com/loopj/android-async-http/blob/1.4.9/CHANGELOG.md
+https://github.com/android-async-http/android-async-http/blob/1.4.11/CHANGELOG.md
 
 Javadoc
 -------
 
-Latest Javadoc for 1.4.9 release are available here (also included in Maven repository):
+Latest Javadoc for 1.4.11 release are available here (also included in Maven repository):
 
-https://loopj.com/android-async-http/doc/
+https://android-async-http.github.io/android-async-http/doc/
 
 Features
 --------
@@ -30,12 +30,13 @@ Features
 - Automatic **gzip** response decoding support for super-fast requests
 - Optional built-in response parsing into **JSON** (JsonHttpResponseHandler)
 - Optional **persistent cookie store**, saves cookies into your app's SharedPreferences
+- Support sni with Conscrypt on older android device ([wiki](https://github.com/android-async-http/android-async-http/wiki/Support-SNI-on-lower-android-device))
 
 Examples
 --------
 
 For inspiration and testing on device we've provided Sample Application.  
-See individual samples [here on Github](https://github.com/loopj/android-async-http/tree/1.4.9/sample/src/main/java/com/loopj/android/http/sample)  
+See individual samples [here on Github](https://github.com/android-async-http/android-async-http/tree/1.4.11/sample/src/main/java/com/loopj/android/http/sample)  
 To run Sample application, simply clone the repository and run this command, to install it on connected device  
 
 ```java
@@ -53,7 +54,7 @@ https://repo1.maven.org/maven2/com/loopj/android/android-async-http/
 Maven URL: https://repo1.maven.org/maven2/
 GroupId: com.loopj.android
 ArtifactId: android-async-http
-Version: 1.4.9
+Version: 1.4.11
 Packaging: JAR or AAR
 ```
 Gradle
@@ -63,18 +64,19 @@ repositories {
 }
 
 dependencies {
-  compile 'com.loopj.android:android-async-http:1.4.9'
+  implementation 'com.loopj.android:android-async-http:1.4.11'
 }
 ```
 
 **development snapshots**
+snapshot might not be published yet
 
 https://oss.sonatype.org/content/repositories/snapshots/com/loopj/android/android-async-http/
 ```
 Maven URL: https://oss.sonatype.org/content/repositories/snapshots/
 GroupId: com.loopj.android
 ArtifactId: android-async-http
-Version: 1.5.0-SNAPSHOT
+Version: 1.4.12-SNAPSHOT
 Packaging: JAR or AAR
 ```
 Gradle
@@ -85,7 +87,7 @@ repositories {
   }
 }
 dependencies {
-  compile 'com.loopj.android:android-async-http:1.5.0-SNAPSHOT'
+  implementation 'com.loopj.android:android-async-http:1.4.11-SNAPSHOT'
 }
 ```
 
@@ -93,5 +95,5 @@ Documentation, Features and Examples
 ------------------------------------
 Full details and documentation can be found on the project page here:
 
-https://loopj.com/android-async-http/
+https://android-async-http.github.io/android-async-http/
 
